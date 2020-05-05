@@ -1,25 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
+import mapboxgl from 'mapbox-gl'
 import './App.css'
-import ReactMapGL from 'react-map-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 function App() {
-  const [viewport, setViewport] = useState({
-    latitude: 35,
-    longitude: 139,
-    zoom: 8,
-  })
+  useEffect(() => {
+    console.log('initializing mapbox')
+    const map = new mapboxgl.Map({
+      accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+    })
 
-  const mapStyle = 'mapbox://styles/mapbox/streets-v11'
+    return () => {
+      console.log('removing mapbox')
+      map.remove()
+    }
+  }, [])
 
-  return (
-    <ReactMapGL
-      {...viewport}
-      onViewportChange={setViewport}
-      width='100vw'
-      height='100vh'
-      mapStyle={mapStyle}
-    />
-  )
+  return <div id='map' />
 }
 
 export default App
