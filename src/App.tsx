@@ -1,29 +1,48 @@
-import React, { useEffect } from 'react'
-import mapboxgl from 'mapbox-gl'
-import MapboxLanguage from '@mapbox/mapbox-gl-language'
+import React from 'react'
+import DeckGL from '@deck.gl/react'
+import { LineLayer } from '@deck.gl/layers'
+import MapGL from 'react-map-gl'
 import './App.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { LanguageControl } from './components/language-control'
+
+// Initial viewport settings
+const initialViewState = {
+  longitude: 139.7,
+  latitude: 35.8,
+  zoom: 10,
+  pitch: 0,
+  bearing: 0,
+}
+
+// Data to be used by the LineLayer
+const data = [
+  {
+    sourcePosition: [139.71669, 35.789],
+    targetPosition: [139.71669, 35.781],
+  },
+]
 
 function App() {
-  useEffect(() => {
-    console.log('initializing mapbox')
-    const map = new mapboxgl.Map({
-      accessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v10',
-      center: [140, 36],
-      zoom: 8,
-    })
-
-    map.addControl(new MapboxLanguage())
-
-    return () => {
-      console.log('removing mapbox')
-      map.remove()
-    }
-  }, [])
-
-  return <div id='map' />
+  const layers = [new LineLayer({ id: 'line-layer', data })]
+  return (
+    <DeckGL
+      initialViewState={initialViewState}
+      controller={true}
+      layers={layers}
+      width='100%'
+      height='100%'
+      effects={[]}
+    >
+      <MapGL
+        width='100%'
+        height='100%'
+        mapStyle='mapbox://styles/mapbox/streets-v10'
+      >
+        <LanguageControl />
+      </MapGL>
+    </DeckGL>
+  )
 }
 
 export default App
